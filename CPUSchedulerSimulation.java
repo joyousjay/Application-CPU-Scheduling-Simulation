@@ -14,21 +14,29 @@ public class CPUSchedulerSimulation {
             System.out.println("Invalid application. Please enter one of the given applications: Microsoft Outlook, YouTube, or Google Chrome ");
             input = scanner.nextLine();
         }
-        System.out.println("You have chosen the following application: " + input);
 
         //switch case:
-        String algorithm = "algorithm name";
-        switch(algorithm){
+        switch(input){
             case "Microsoft Outlook":
-                // JFrame frame = new JFrame();
-                // String[] columnNames = {"Process Name, Arrival time, Burst time"};
-                // JTable table = new JTable(null, columnNames);
-                // frame.add(table);
-                // frame.setVisible(false);
+                System.out.println("You have chosen the following application: " + input);
+                JFrame frame = new JFrame();
+                String[] columnNames = {"Process Name", "Arrival time", "Burst time"};
+                Object[][] data = {
+                    {"P1", new Integer(1), new Integer(1)}
+                };
+                JTable table = new JTable(data, columnNames);
+                frame.add(table);
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setSize(400,400);
+                frame.setLocationRelativeTo(null);  
+                frame.setVisible(true);
                 break;
             case "YouTube":
+                System.out.println("You have chosen the following application: " + input);    
                 break;
-            case "Google Chrome":     
+            case "Google Chrome":    
+                System.out.println("You have chosen the following application: " + input);
+                break;
         }
         scanner.close();
 
