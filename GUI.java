@@ -5,12 +5,13 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 
-
 public class GUI  {
-    public static void main(String args[]){
+    static JTable baseTable = new JTable();
+    JFrame frame = new JFrame();
 
-        JFrame frame = new JFrame();
     
+    public void create() 
+    {
         JRadioButton appOne, appTwo, appThree;
         appOne = new JRadioButton("Microsoft Outlook");
         appTwo = new JRadioButton("YouTube");
@@ -34,8 +35,7 @@ public class GUI  {
         { MicrosoftOutlookProcesses[2], MicrosoftOutlookProcessesArrivalTimes[2], MicrosoftOutlookProcessesBurstTimes[2] }
         };
         String[] columnNames = {"Process Name", "Arrival time", "Burst time"};
-        JTable appOneTable = new JTable(data, columnNames);
-        appOneTable.setVisible(false);
+        
 
         //to enable only one application chosen at a time
         ButtonGroup applicationButtonGroup = new ButtonGroup();
@@ -53,8 +53,8 @@ public class GUI  {
             @Override
             public void actionPerformed(ActionEvent e) {
                 applicationButtonGroup.clearSelection();
-                appOneTable.setVisible(false);
-                panel.remove(new JScrollPane(appOneTable));
+                baseTable.setVisible(false);
+                panel.remove(new JScrollPane(baseTable));
                 //need to figure out how to make table itself disappear
                 
             }     
@@ -70,17 +70,13 @@ public class GUI  {
                     // appOneProcesses.add(new Process("P1", 1, 2));
                     // appOneProcesses.add(new Process("P2", 2, 4));
                     // appOneProcesses.add(new Process("P3", 3, 6));
-
-                   // make code click on one application 
-                   // and not be able to click on another until you press reset 
-                    appTwo.setSelected(false);
-                    appThree.setSelected(false);
+                    baseTable = new JTable(data, columnNames);
 
                     // appOneTable.setSize(400,800);
-                    appOneTable.setLocation(10,-100);
-                    appOneTable.setVisible(true);
-                    appOneTable.setGridColor(Color.gray);
-                    panel.add(new JScrollPane(appOneTable));
+                    baseTable.setLocation(10,-100);
+                    baseTable.setVisible(true);
+                    baseTable.setGridColor(Color.gray);
+                    panel.add(new JScrollPane(baseTable));
                     panel.setVisible(true);
                     frame.setVisible(true);
                 }
@@ -103,25 +99,41 @@ public class GUI  {
 
 
                     // appOneTable.setSize(400,800);
-                    appOneTable.setLocation(10,-100);
-                    appOneTable.setVisible(true);
-                    appOneTable.setGridColor(Color.gray);
-                    panel.add(new JScrollPane(appOneTable));
+                    baseTable.setLocation(10,-100);
+                    baseTable.setVisible(true);
+                    baseTable.setGridColor(Color.gray);
+                    panel.add(new JScrollPane(baseTable));
                     panel.setVisible(true);
                     frame.setVisible(true);
                 }
                 
             }
         });
-
-
         // frame.setJMenuBar(applicatioMenuBar);
-        frame.setSize(1200,1200);
-        frame.setVisible(true);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        // frame.setSize(1200,1200);
+        // frame.setVisible(true);
+        // frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
     }
-        
+    
+    //the last three are what will be displayed on GUI
+    //for all four scheduling algorithms
+    public double calculateOverallTurnAroundTime(ProcessSimulation... processSchedulers) {
+        double sumOfSchedulersTurnAroundTimes = 0;
+        for (ProcessSimulation processScheduler : processSchedulers) {
+            sumOfSchedulersTurnAroundTimes += processScheduler.getAverageTurnAroundTime();
+        }
+        return sumOfSchedulersTurnAroundTimes/processSchedulers.length;
+    }
+
+    // public double calculateOverallThroughput(){
+    //     return 0.0;
+    // }
+
+    // public double calculateOverallWaitingTime(){
+    //     return 0.0;
+    // }
+    
 
         //switch case for each user input option:
         // switch(input){
