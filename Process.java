@@ -8,15 +8,13 @@ public class Process {
     long arrivalTime;
     //time process finishes execution
     long completionTime;
-    //int timeRun;
-
-    Process(String processId, int arrivalTime, int burstTime /*,int completionTime*/) {
+    
+    Process(String processId, int burstTime) {
         this.processId = processId;
-        this.arrivalTime = arrivalTime;
         this.burstTime = burstTime;
-        //this.completionTime = completionTime;
     }
 
+    //setters and getters
     public void setArrivalTime(long arrivalTime) {
         this.arrivalTime = arrivalTime;
     }
@@ -42,37 +40,25 @@ public class Process {
     public long getCompletionTime() {
         return completionTime;
     }
-
+    //simulates a process in scheduler
     public void runProcess() {
         try {
             Thread.sleep(burstTime);
         }
-        catch (Exception e) {
+        catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
-    //of every process
-    public double getTurnAroundTime(){
+    //results of every process
+    //formula for turnaround time: completion time  - arrival time
+    public double getTurnAroundTime() {
         return this.getCompletionTime() - this.getArrivalTime();
-    //completion - arrival time
+   
     }
 
-    //of every process
-    public double getWaitingTime(){
+    //results of every process
+    //formula for waiting time: turnaround time - burst time
+    public double getWaitingTime() {
         return this.getTurnAroundTime() - this.getBurstTime();
-    //turnaround time - burst time
     }
 }
-
-    // //result of every process
-    // int waitingTime;
-    // int turnaroundtime;
-    // //results from all processes in one scheduling algorithm
-    // int averageofWaitingTimes;
-    // int averageofTurnaroundTimes;
-    // int throughput;
-    // //final results of all processes' data from every scheduling algorithm
-    // int overallWaitingTime;
-    // int overallTurnaroundTime;
-    // int overallThroughput;
- 
