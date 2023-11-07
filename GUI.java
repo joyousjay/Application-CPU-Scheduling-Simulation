@@ -157,6 +157,8 @@ public class GUI {
         frame.setVisible(true);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
+		//panelTwo.add(System.out.println("hi"));
+
     }
     /* final results of all processes' data from every scheduling algorithm */
     public double calculateOverallTurnAroundTime(ProcessSimulation... processSchedulers) {
