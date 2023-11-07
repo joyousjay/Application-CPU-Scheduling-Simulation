@@ -10,14 +10,19 @@ public class LJF extends ProcessSimulation{
             addProcess(new Process(appNames[i], appBurstTimes[i]));
         }
     }
-
+    // public void removeProcesses() {
+    //   for (int i = 0; i < processList.size(); i++) {
+    //     Process process = processList.remove(i);
+    //     finishedRunProcessList.add(process);
+    //   }
+    // }
     public void addProcess(Process process){
       //set arrivalTime 
       process.setArrivalTime(System.currentTimeMillis());
       processList.add(process);
     }
 
-    public void removeProcess(Process process){
+    public void removeProcesses(Process process){
       processList.remove(process);
     }
 

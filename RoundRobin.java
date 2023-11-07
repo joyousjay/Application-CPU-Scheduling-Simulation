@@ -16,7 +16,12 @@ public class RoundRobin extends ProcessSimulation {
 		process.setArrivalTime(System.currentTimeMillis());
 		processList.add(process);
 	}
-
+	// public void removeProcesses() {
+	// 	for (int i = 0; i < processList.size(); i++) {
+	// 		Process process = processList.remove(i);
+	// 		finishedRunProcessList.add(process);
+	// 	}
+	// }
 	public void removeProcess(Process process) {
 		processList.remove(process);
 	}

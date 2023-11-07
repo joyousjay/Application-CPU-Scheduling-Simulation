@@ -42,8 +42,11 @@ public class Process {
     }
     //simulates a process in scheduler
     public void runProcess() {
+        System.out.println("is it failing" + burstTime);
         try {
-            Thread.sleep(burstTime);
+            System.out.println("sleep");
+            Thread.sleep(burstTime * 1000);
+            System.out.println("awake");
         }
         catch (InterruptedException e) {
             e.printStackTrace();
@@ -52,7 +55,7 @@ public class Process {
     //results of every process
     //formula for turnaround time: completion time  - arrival time
     public double getTurnAroundTime() {
-        return this.getCompletionTime() - this.getArrivalTime();
+        return (this.getCompletionTime() - this.getArrivalTime())/1000;
    
     }
 
@@ -60,5 +63,9 @@ public class Process {
     //formula for waiting time: turnaround time - burst time
     public double getWaitingTime() {
         return this.getTurnAroundTime() - this.getBurstTime();
+    }
+
+    public String toString() { 
+        return processId + " " + burstTime;
     }
 }
