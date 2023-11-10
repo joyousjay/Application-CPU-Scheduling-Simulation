@@ -22,27 +22,30 @@ public class SJF extends ProcessSimulation {
 		processList.add(process);
 	}
 
-	// public void removeProcesses() {
-	// 	for (int i = 0; i < processList.size(); i++) {
-	// 		Process process = processList.remove(i);
-	// 		finishedRunProcessList.add(process);
-	// 	}
-	// }
-	public void removeProcesses(Process process) {
-		process.setCompletionTime(System.currentTimeMillis());
-		processList.remove(process);
-		finishedRunProcessList.add(process);
+	public void removeProcesses() {
+		for (int i = 0; i < processList.size(); i++) {
+			Process process = processList.remove(i);
+			finishedRunProcessList.add(process);
+		}
 	}
+	// public void removeProcesses(Process process) {
+	// 	process.setCompletionTime(System.currentTimeMillis());
+	// 	processList.remove(process);
+	// 	finishedRunProcessList.add(process);
+	// }
 
 	public void simulate() {
 		// sort by burst time (ascending or descending ?)
-		processList.sort(Comparator.comparing(process -> process.burstTime));
+		processList.sort(Comparator.comparing(Process::getBurstTime));
 		for (int i = 0; i < processList.size(); i++) {
 			// processList.get(i).getBurstTime()
+			System.out.println(processList.get(i) +" "+ i);
 			processList.get(i).runProcess();
-			processList.remove(i);
+			// this.removeProcess(processList.get(i));
+			processList.get(i).setCompletionTime(System.currentTimeMillis());
 		}
-		gui.displayResults();
+		this.removeProcesses();
+		//gui.displayAverageResults(getApplication(), getScheduler(), getAverageTurnAroundTime(), getAverageWaitingTime(), getThroughput());
 	}
 
 

@@ -1,3 +1,4 @@
+//First Come First Serve CPU Scheduler
 import java.util.ArrayList;
 
 public class FCFS extends ProcessSimulation {
@@ -17,7 +18,7 @@ public class FCFS extends ProcessSimulation {
 		// set the arrival time
 		process.setArrivalTime(System.currentTimeMillis());
 		processList.add(process);
-		System.out.println(process);
+		//System.out.println(process);
 	}
 
 	public void removeProcesses() {
@@ -37,14 +38,11 @@ public class FCFS extends ProcessSimulation {
 			System.out.println("is it working?");
 		}
 		this.removeProcesses();
-		System.out.println("is it pausing?");
+		//System.out.println("is it pausing?");
 		//once execution has finished, callback to the GUI
-		gui.displayResults();
-		// getAverageWaitingTime();
-		// getAverageTurnAroundTime();
-		// getThroughput();
+		gui.displayAverageResults(getApplication(), getScheduler(), getAverageTurnAroundTime(), getAverageWaitingTime(), getThroughput());
 	}
-
+	//set the application's process names and its burst times
 	public void setData(String[] appProcessNames, int[] appProcessBurstTimes) {
 		for (int i = 0; i < appProcessNames.length; i++) {
 			addProcess(new Process(appProcessNames[i], appProcessBurstTimes[i]));

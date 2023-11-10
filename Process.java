@@ -42,11 +42,11 @@ public class Process {
     }
     //simulates a process in scheduler
     public void runProcess() {
-        System.out.println("is it failing" + burstTime);
+        //System.out.println("is it failing" + burstTime);
         try {
-            System.out.println("sleep");
+            //System.out.println("sleep");
             Thread.sleep(burstTime * 1000);
-            System.out.println("awake");
+            //System.out.println("awake");
         }
         catch (InterruptedException e) {
             e.printStackTrace();
