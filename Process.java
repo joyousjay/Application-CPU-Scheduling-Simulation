@@ -8,10 +8,13 @@ public class Process {
     long arrivalTime;
     //time process finishes execution
     long completionTime;
+    //remaining burst time for round robin after time quantum slices
+    long remainingTime;
     
     Process(String processId, int burstTime) {
         this.processId = processId;
         this.burstTime = burstTime;
+        this.remainingTime = burstTime;
     }
 
     //setters and getters
@@ -40,6 +43,14 @@ public class Process {
     public long getCompletionTime() {
         return completionTime;
     }
+
+    public void setRemainingTime(long remainingTime){
+        this.remainingTime = remainingTime;
+    }
+
+    public long getRemainingTime(){
+        return remainingTime;
+    }
     //simulates a process in scheduler
     public void runProcess() {
         //System.out.println("is it failing" + burstTime);
@@ -52,6 +63,17 @@ public class Process {
             e.printStackTrace();
         }
     }
+    //simulates round robin scheduler taking in time quantum slice
+    public void runProcess(long timeQuantum) {
+        //System.out.println("is it failing" + burstTime);
+        try {
+            Thread.sleep(timeQuantum);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
     //results of every process
     //formula for turnaround time: completion time  - arrival time
     public double getTurnAroundTime() {

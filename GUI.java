@@ -17,10 +17,10 @@ public class GUI {
     JPanel panel = new JPanel();
     JPanel panelTwo = new JPanel();
     FCFS fcfs = new FCFS(this);
-    SJF sjf;
-    LJF ljf;
-    RoundRobin rr;
-    //Scanner scan = new Scanner(System.in);
+    SJF sjf = new SJF(this);
+    LJF ljf = new LJF(this);
+    RoundRobin rr = new RoundRobin(this);
+   // JTextField textBox = new JTextField();
 
     public GUI() {
 
@@ -43,8 +43,8 @@ public class GUI {
 
         String[] microsoftOutlookProcesses = { "P1", "P2", "P3" };
         int[] microsoftOutlookProcessesArrivalOrder = { 1, 2, 3 };
-
-        int[] microsoftOutlookProcessesBurstTimes = { 1, 2, 3 };
+        
+        int[] microsoftOutlookProcessesBurstTimes = {2, 4, 6};
         Object[][] outlookData = {
                 { microsoftOutlookProcesses[0], microsoftOutlookProcessesArrivalOrder[0],
                         microsoftOutlookProcessesBurstTimes[0] },
@@ -66,7 +66,7 @@ public class GUI {
 
         String[] youtubeProcesses = { "P1", "P2", "P3", "P4", "P5", "P6" };
         int[] youtubeProcessesArrivalOrder = { 1, 2, 3, 4, 5, 6 };
-        int[] youtubeProcessesBurstTimes = { 1, 2, 3, 4, 5, 6 };
+        int[] youtubeProcessesBurstTimes = { 11, 9, 7, 5, 3, 1 };
         Object[][] YouTubeData = {
                 { youtubeProcesses[0], youtubeProcessesArrivalOrder[0], youtubeProcessesBurstTimes[0] },
                 { youtubeProcesses[1], youtubeProcessesArrivalOrder[1], youtubeProcessesBurstTimes[1] },
@@ -75,7 +75,6 @@ public class GUI {
                 { youtubeProcesses[4], youtubeProcessesArrivalOrder[4], youtubeProcessesBurstTimes[4] },
                 { youtubeProcesses[5], youtubeProcessesArrivalOrder[5], youtubeProcessesBurstTimes[5] }
         };
-        // scan.close();
 
         // to enable only one application chosen at a time
         ButtonGroup applicationButtonGroup = new ButtonGroup();
@@ -165,34 +164,56 @@ public class GUI {
                 }
             }
         });
+
+        // googleChrome.addActionListener(new ActionListener() {
+        //     @Override
+        //     public void actionPerformed(ActionEvent e) {
+        //         if (googleChrome.isSelected()) {
+        //             if (panelTwo.getComponentCount() > 0) {
+        //                 panelTwo.remove(0);
+        //             }
+        //             chromeTable = new JTable(googleChromData, columnNames);
+        //             panelTwo.add(new JScrollPane(chromeTable));
+        //             chromeTable.setGridColor(Color.gray);
+        //             panel.setVisible(true);
+        //             frame.setVisible(true);
+        //             microsoftOutlook.setSelected(false);
+        //             youtube.setSelected(false);
+        //         }
+        //     }
+        // });
         //fix to take average results
         simulate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // need to appear when simulate button is clicked
                 if (microsoftOutlook.isSelected()) {
+                    // youtube.setSelected(false);
+                    // googleChrome.setSelected(false);
                     fcfs.setApplication("Microsoft Outlook");
                     fcfs.setScheduler("FCFS");
                     fcfs.setData(microsoftOutlookProcesses, microsoftOutlookProcessesBurstTimes);
+                    sjf.setApplication("Microsoft Outlook");
+                    sjf.setScheduler("SJF");
+                    sjf.setData(microsoftOutlookProcesses, microsoftOutlookProcessesBurstTimes);
                    // sjf = new SJF(microsoftOutlookProcesses, microsoftOutlookProcessesBurstTimes);
-                    ljf = new LJF(microsoftOutlookProcesses, microsoftOutlookProcessesBurstTimes);
-                    rr = new RoundRobin(microsoftOutlookProcesses, microsoftOutlookProcessesBurstTimes);
+                    ljf.setApplication("Microsoft Outlook");
+                    ljf.setScheduler("LJF");
+                    ljf.setData(microsoftOutlookProcesses, microsoftOutlookProcessesBurstTimes);
+                    rr.setApplication("Microsoft Outlook");
+                    rr.setScheduler("Round Robin");
+                    rr.setData(microsoftOutlookProcesses, microsoftOutlookProcessesBurstTimes);
+                    //run scheduler threads for simulation
                     fcfs.start();
-                    //sjf.start();
-                    // try {
-                    //     fcfs.join();
-                    // } catch (InterruptedException e1) {
-                    //     // TODO Auto-generated catch block
-                    //     e1.printStackTrace();
-                    // }
-                    // sjf.start();
-                    //System.out.println("hi!");
-                    // ljf.simulate();
-                    // rr.simulate();
+                    sjf.start();
+                    ljf.start();
+                    rr.start();
                     // callback to when schedulers are done running needed
-                    // get data asynchronously (since gui time and schedulers time are different)
+                   
                 }
                 if (youtube.isSelected()) {
+                    microsoftOutlook.setSelected(false);
+                    googleChrome.setSelected(false);
                     fcfs.setScheduler("FCFS");
                     fcfs.setApplication("YouTube");
                     fcfs.setData(youtubeProcesses, youtubeProcessesBurstTimes);
@@ -238,16 +259,17 @@ public class GUI {
         panelTwo.setVisible(true);
         frame.setVisible(true);
         panelTwo.repaint();
-        //new instance of thread
-        //fcfs = new FCFS(this);
+        //new instance of scheduler thread
+        fcfs = new FCFS(this);
         sjf = new SJF(this);
-        
+        ljf = new LJF(this);
+        rr = new RoundRobin(this);   
     }
 
     // public void displayOverallResults(String application, double turnaround, double waiting, double throughput) {
-    //     double[] MicrosoftOutlookResults = { calculateOverallTurnAroundTime(fcfs/* , sjf /*, ljf, rr */),
-    //             calculateOverallWaitingTime(fcfs/* , sjf /*, ljf, rr */),
-    //             calculateOverallThroughput(fcfs/* , sjf /*, ljf, rr */) };
+    //     // double[] MicrosoftOutlookResults = { calculateOverallTurnAroundTime(fcfs/* , sjf /*, ljf, rr */),
+    //     //         calculateOverallWaitingTime(fcfs/* , sjf /*, ljf, rr */),
+    //     //         calculateOverallThroughput(fcfs/* , sjf /*, ljf, rr */) };
     //     String[] resultColumnNames = { "Turnaround time", "Waiting time", "Throughput" };
     //     Object[][] outlookResults = {
     //             { MicrosoftOutlookResults[0], MicrosoftOutlookResults[1], MicrosoftOutlookResults[2] }
