@@ -8,9 +8,10 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class GUI implements TableModelListener {
-    JTable appTable = new JTable();
-    JTable resultsTable = new JTable();
-    JTable overallResultsTable = new JTable();
+    /* global variables */
+    JTable appTable = new JTable(); //table to display information about application
+    JTable averageResultsTable= new JTable(); //table to display average results of every schedulder
+    JTable overallResultsTable = new JTable(); //table to display overall results of an application
     JFrame frame = new JFrame();
     JRadioButton microsoftOutlook, youtube, googleChrome;
     // each row is a panel
@@ -36,6 +37,7 @@ public class GUI implements TableModelListener {
     int[] youtubeProcessesArrivalOrder = { 1, 2, 3, 4, 5, 6 };
     int[] youtubeProcessesBurstTimes = { 11, 9, 7, 5, 3, 1 };
     Object[][] youtubeData = {
+        { youtubeProcesses[0], youtubeProcessesArrivalOrder[0], youtubeProcessesBurstTimes[0] },
         { youtubeProcesses[1], youtubeProcessesArrivalOrder[1], youtubeProcessesBurstTimes[1] },
         { youtubeProcesses[2], youtubeProcessesArrivalOrder[2], youtubeProcessesBurstTimes[2] },
         { youtubeProcesses[3], youtubeProcessesArrivalOrder[3], youtubeProcessesBurstTimes[3] },
@@ -43,15 +45,21 @@ public class GUI implements TableModelListener {
         { youtubeProcesses[5], youtubeProcessesArrivalOrder[5], youtubeProcessesBurstTimes[5] }
     };
 
-    String[] googleChromeProcesses = { "P1", "P2", "P3", "P4", "P5", "P6" };
-    int[] googleChromeProcessesArrivalOrder = { 1, 2, 3, 4, 5, 6 };
-    int[] googleChromeProcessesBurstTimes = { 11, 9, 7, 5, 3, 1 };
+    String[] googleChromeProcesses = { "P1", "P2", "P3", "P4", "P5", "P6", "P7" , "P8" , "P9" , "P10" };
+    int[] googleChromeProcessesArrivalOrder = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    int[] googleChromeProcessesBurstTimes = { 3, 6, 9, 12, 15, 18, 21, 24, 27, 30 };
     Object[][] chromeData = {
-        { youtubeProcesses[1], youtubeProcessesArrivalOrder[1], youtubeProcessesBurstTimes[1] },
-        { youtubeProcesses[2], youtubeProcessesArrivalOrder[2], youtubeProcessesBurstTimes[2] },
-        { youtubeProcesses[3], youtubeProcessesArrivalOrder[3], youtubeProcessesBurstTimes[3] },
-        { youtubeProcesses[4], youtubeProcessesArrivalOrder[4], youtubeProcessesBurstTimes[4] },
-        { youtubeProcesses[5], youtubeProcessesArrivalOrder[5], youtubeProcessesBurstTimes[5] }
+        { googleChromeProcesses[0], googleChromeProcessesArrivalOrder[0], googleChromeProcessesBurstTimes[0] },
+        { googleChromeProcesses[1], googleChromeProcessesArrivalOrder[1], googleChromeProcessesBurstTimes[1] },
+        { googleChromeProcesses[2], googleChromeProcessesArrivalOrder[2], googleChromeProcessesBurstTimes[2] },
+        { googleChromeProcesses[3], googleChromeProcessesArrivalOrder[3], googleChromeProcessesBurstTimes[3] },
+        { googleChromeProcesses[4], googleChromeProcessesArrivalOrder[4], googleChromeProcessesBurstTimes[4] },
+        { googleChromeProcesses[5], googleChromeProcessesArrivalOrder[5], googleChromeProcessesBurstTimes[5] }, 
+        { googleChromeProcesses[6], googleChromeProcessesArrivalOrder[6], googleChromeProcessesBurstTimes[6] }, 
+        { googleChromeProcesses[7], googleChromeProcessesArrivalOrder[7], googleChromeProcessesBurstTimes[7] }, 
+        { googleChromeProcesses[8], googleChromeProcessesArrivalOrder[8], googleChromeProcessesBurstTimes[8] }, 
+        { googleChromeProcesses[9], googleChromeProcessesArrivalOrder[9], googleChromeProcessesBurstTimes[9] } 
+
     };
 
     public GUI() {
@@ -62,6 +70,12 @@ public class GUI implements TableModelListener {
         microsoftOutlook = new JRadioButton("Microsoft Outlook");
         youtube = new JRadioButton("YouTube");
         googleChrome = new JRadioButton("Google Chrome");
+
+        // to enable only one application chosen at a time
+        ButtonGroup applicationButtonGroup = new ButtonGroup();
+        applicationButtonGroup.add(microsoftOutlook);
+        applicationButtonGroup.add(youtube);
+        applicationButtonGroup.add(googleChrome);
 
         panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
                 "Application CPU Scheduler Simulation", TitledBorder.CENTER, TitledBorder.TOP));
@@ -79,31 +93,22 @@ public class GUI implements TableModelListener {
         }
         appModel.addTableModelListener(this);
 
-        DefaultTableModel model = (DefaultTableModel) resultsTable.getModel();
-        String[] resultColumnNames = {"Application", "Scheduler", "Average Turnaround time", "Average Waiting time", "Throughput" };
-        resultsTable = new JTable();
-        model.addColumn(resultColumnNames[0]);
-        model.addColumn(resultColumnNames[1]);
-        model.addColumn(resultColumnNames[2]);
-        model.addColumn(resultColumnNames[3]);
-        model.addColumn(resultColumnNames[4]);
-        resultsTable.setModel(model);
+        DefaultTableModel averageModel = (DefaultTableModel) averageResultsTable.getModel();
+        String[] averageResultsColumnNames = {"Application", "Scheduler", "Average Turnaround time", "Average Waiting time", "Throughput" };
+        averageResultsTable= new JTable();
+        for (int i = 0; i < averageResultsColumnNames.length; i++){
+            averageModel.addColumn(averageResultsColumnNames[i]);
+        }
+        averageResultsTable.setModel(averageModel);
 
     
         DefaultTableModel overallModel = (DefaultTableModel) overallResultsTable.getModel();
         String[] overallResultColumnNames = {"Application", "Overall Turnaround time", "Overall Waiting time", "Overall Throughput" };
         overallResultsTable = new JTable();
-        overallModel.addColumn(overallResultColumnNames[0]);
-        overallModel.addColumn(overallResultColumnNames[1]);
-        overallModel.addColumn(overallResultColumnNames[2]);
-        overallModel.addColumn(overallResultColumnNames[3]);
+        for (int i = 0; i < overallResultColumnNames.length; i++){
+            overallModel.addColumn(overallResultColumnNames[i]);
+        }
         overallResultsTable.setModel(overallModel);
-
-        // to enable only one application chosen at a time
-        ButtonGroup applicationButtonGroup = new ButtonGroup();
-        applicationButtonGroup.add(microsoftOutlook);
-        applicationButtonGroup.add(youtube);
-        applicationButtonGroup.add(googleChrome);
 
         JButton simulate = new JButton("Simulate");
         JButton reset = new JButton("Reset Simulation");
@@ -149,10 +154,10 @@ public class GUI implements TableModelListener {
                     e1.printStackTrace();
                 }
                 //remove rows from default model and reset model
-                model.setRowCount(0);
+                averageModel.setRowCount(0);
                 overallModel.setRowCount(0);
                 appModel.setRowCount(0);
-                resultsTable.setModel(model);
+                averageResultsTable.setModel(averageModel);
                 overallResultsTable.setModel(overallModel);
                // appTable.setModel(appModel);
                 //reset panel
@@ -177,7 +182,7 @@ public class GUI implements TableModelListener {
                     }
                     
                     appTable.setModel(appModel);
-                    appTable.setPreferredScrollableViewportSize(new Dimension(350, 150));
+                    appTable.setPreferredScrollableViewportSize(new Dimension(350, 350));
                     panelTwo.repaint();
                     
                     appTable.setGridColor(Color.gray);
@@ -199,7 +204,7 @@ public class GUI implements TableModelListener {
                         appModel.addRow(youtubeData[i]);
                     }
                     appTable.setModel(appModel);
-                    appTable.setPreferredScrollableViewportSize(new Dimension(350, 150));
+                    appTable.setPreferredScrollableViewportSize(new Dimension(350, 350));
                     
                     panelTwo.repaint();
                     appTable.setGridColor(Color.gray);
@@ -220,7 +225,7 @@ public class GUI implements TableModelListener {
                         appModel.addRow(chromeData[i]);
                     }
                     appTable.setModel(appModel);
-                    appTable.setPreferredScrollableViewportSize(new Dimension(350, 150));
+                    appTable.setPreferredScrollableViewportSize(new Dimension(350, 350));
                     
                     panelTwo.repaint();
                     appTable.setGridColor(Color.gray);
@@ -229,6 +234,7 @@ public class GUI implements TableModelListener {
                 }
             }
         });
+        
         
         simulate.addActionListener(new ActionListener() {
             @Override
@@ -256,13 +262,13 @@ public class GUI implements TableModelListener {
                 }
                 if (googleChrome.isSelected()){
                     fcfs.setApplication("Google Chrome");
-                    fcfs.setData(youtubeProcesses, youtubeProcessesBurstTimes);
+                    fcfs.setData(googleChromeProcesses, googleChromeProcessesBurstTimes);
                     sjf.setApplication("Google Chrome");
-                    sjf.setData(youtubeProcesses, youtubeProcessesBurstTimes);
+                    sjf.setData(googleChromeProcesses, googleChromeProcessesBurstTimes);
                     ljf.setApplication("Google Chrome");
-                    ljf.setData(youtubeProcesses, youtubeProcessesBurstTimes);
+                    ljf.setData(googleChromeProcesses, googleChromeProcessesBurstTimes);
                     rr.setApplication("Google Chrome");
-                    rr.setData(youtubeProcesses, youtubeProcessesBurstTimes);
+                    rr.setData(googleChromeProcesses, googleChromeProcessesBurstTimes);
                 }
                 fcfs.setScheduler("FCFS");
                 sjf.setScheduler("SJF");
@@ -275,19 +281,20 @@ public class GUI implements TableModelListener {
                 rr.start();
                 //cause threads to wait before ending
                 try {
-                        fcfs.join();
-                        sjf.join();
-                        ljf.join();
-                        rr.join();
-                    } catch (InterruptedException e1) {
+                    fcfs.join();
+                    sjf.join();
+                    ljf.join();
+                    rr.join();
+                } 
+                catch (InterruptedException e1) {
                         // TODO Auto-generated catch block
                         e1.printStackTrace();
-                    }
-                    //System.out.println("am I reaching here " + fcfs.getApplication());
-                    displayOverallResults(fcfs.getApplication(), 
-                        ProcessSimulation.calculateOverallTurnAroundTime(fcfs, sjf, ljf, rr), 
-                        ProcessSimulation.calculateOverallWaitingTime(fcfs, sjf, ljf, rr), 
-                        ProcessSimulation.calculateOverallThroughput(fcfs, sjf, ljf, rr));
+                }
+                //System.out.println("am I reaching here " + fcfs.getApplication());
+                displayOverallResults(fcfs.getApplication(), 
+                    ProcessSimulation.calculateOverallTurnAroundTime(fcfs, sjf, ljf, rr), 
+                    ProcessSimulation.calculateOverallWaitingTime(fcfs, sjf, ljf, rr), 
+                    ProcessSimulation.calculateOverallThroughput(fcfs, sjf, ljf, rr));
             }
         });          
         frame.setSize(1200, 1200);
@@ -298,12 +305,12 @@ public class GUI implements TableModelListener {
     /* method to display average results for every scheduler associated with an application on table in gui */
     public void displayAverageResults(String application, String scheduler, double turnaround, double waiting, double throughput) {
         Object[] data = {application, scheduler, turnaround, waiting, throughput};
-        DefaultTableModel model = (DefaultTableModel) resultsTable.getModel();
+        DefaultTableModel model = (DefaultTableModel) averageResultsTable.getModel();
         model.addRow(data);
-        resultsTable.setModel(model);
-        resultsTable.setGridColor(Color.gray);
-        resultsTable.setPreferredScrollableViewportSize(new Dimension(650, 170));
-        panelTwo.add(new JScrollPane(resultsTable));
+        averageResultsTable.setModel(model);
+        averageResultsTable.setGridColor(Color.gray);
+        averageResultsTable.setPreferredScrollableViewportSize(new Dimension(650, 170));
+        panelTwo.add(new JScrollPane(averageResultsTable));
         panelTwo.setVisible(true);
         frame.setVisible(true);
         panelTwo.repaint();
