@@ -66,27 +66,27 @@ public abstract class ProcessSimulation extends Thread {
    }
 
    /* final results of all processes' data from every scheduling algorithm */
-   public double calculateOverallTurnAroundTime(ProcessSimulation... processSchedulers) {
+   static public double calculateOverallTurnAroundTime(ProcessSimulation... processSchedulers) {
       double sumOfSchedulersTurnAroundTimes = 0.0;
       for (ProcessSimulation processScheduler : processSchedulers) {
           sumOfSchedulersTurnAroundTimes += processScheduler.getAverageTurnAroundTime();
       }
       return (sumOfSchedulersTurnAroundTimes / processSchedulers.length);
-  }
+   }
 
-  public double calculateOverallThroughput(ProcessSimulation... processSchedulers) {
+  static public double calculateOverallThroughput(ProcessSimulation... processSchedulers) {
       double sumOfSchedulersThroughput = 0.0;
       for (ProcessSimulation processScheduler : processSchedulers) {
           sumOfSchedulersThroughput += processScheduler.getThroughput();
       }
       return (sumOfSchedulersThroughput / processSchedulers.length);
-  }
+   }
 
-  public double calculateOverallWaitingTime(ProcessSimulation... processSchedulers) {
+  static public double calculateOverallWaitingTime(ProcessSimulation... processSchedulers) {
       double sumOfSchedulersWaitingTime = 0.0;
       for (ProcessSimulation processScheduler : processSchedulers) {
           sumOfSchedulersWaitingTime += processScheduler.getAverageWaitingTime();
       }
       return (sumOfSchedulersWaitingTime / processSchedulers.length);
-  }
+   }
 }

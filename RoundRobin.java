@@ -48,6 +48,7 @@ public class RoundRobin extends ProcessSimulation {
 		//once execution has finished, callback to the GUI
 		//get data asynchronously (since gui time and schedulers time are different)
 		gui.displayAverageResults(getApplication(), getScheduler(), getAverageTurnAroundTime(), getAverageWaitingTime(), getThroughput());
+		//gui.displayOverallResults(getApplication(), calculateOverallTurnAroundTime(), calculateOverallWaitingTime(), calculateOverallThroughput());
 	}
 
 	public void setData(String[] appProcessNames, int[] appProcessBurstTimes) {

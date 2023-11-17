@@ -41,6 +41,7 @@ public class FCFS extends ProcessSimulation {
 		//once execution has finished, callback to the GUI
 		//get data asynchronously (since gui time and schedulers time are different)
 		gui.displayAverageResults(getApplication(), getScheduler(), getAverageTurnAroundTime(), getAverageWaitingTime(), getThroughput());
+		// gui.displayOverallResults(getApplication(), calculateOverallTurnAroundTime(), calculateOverallWaitingTime(), calculateOverallThroughput());
 	}
 	//set the application's process names and its burst times
 	public void setData(String[] appProcessNames, int[] appProcessBurstTimes) {
