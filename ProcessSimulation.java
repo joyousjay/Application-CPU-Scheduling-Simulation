@@ -3,7 +3,6 @@ import java.util.ArrayList;
 public abstract class ProcessSimulation extends Thread {
 
    abstract public void addProcess(Process process);
-   //abstract public void removeProcesses();
    abstract void simulate();
 
    ArrayList<Process> processList = new ArrayList<>();
@@ -11,6 +10,7 @@ public abstract class ProcessSimulation extends Thread {
    private String application;
    private String scheduler;
 
+   // invokes simulate method in schedulers 
    public void run() {
       simulate();
    }
@@ -39,7 +39,6 @@ public abstract class ProcessSimulation extends Thread {
          sumOfWaitingTimes += finishedRunProcessList.get(i).getWaitingTime();
       }
       System.out.print("Average waiting time: " + sumOfWaitingTimes/finishedRunProcessList.size()); 
-      // System.out.println(sumOfWaitingTimes/finishedRunProcessList.size());
       return (sumOfWaitingTimes/finishedRunProcessList.size()); 
    }
 
@@ -59,7 +58,6 @@ public abstract class ProcessSimulation extends Thread {
       double sumOfCompletionTimes = 0;
       for (int i = 0; i < finishedRunProcessList.size(); i++){
          sumOfCompletionTimes += (finishedRunProcessList.get(i).getBurstTime());
-        // sumOfCompletionTimes += finishedRunProcessList.get(i).getTurnAroundTime(); 
       }  
       System.out.println("Average throughput " + finishedRunProcessList.size()/sumOfCompletionTimes);
       return (finishedRunProcessList.size()/sumOfCompletionTimes);

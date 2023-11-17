@@ -1,10 +1,7 @@
 //Round Robin CPU Scheduler Algorithm
-import java.util.*;
 
 public class RoundRobin extends ProcessSimulation {
 	GUI gui;
-	// ArrayList<Process> processList = new ArrayList<>();
-	// ArrayList<Process> finishedProcessList = new ArrayList<>();
 
 	public RoundRobin(GUI gui) {
 		this.gui = gui;
@@ -22,10 +19,6 @@ public class RoundRobin extends ProcessSimulation {
 			//finishedRunProcessList.add(process);
 		}
 	}
-
-	// public void removeProcess(Process process) {
-	// 	processList.remove(process);
-	// }
 
 	// non-preemptive
 	public void simulate() {
@@ -45,10 +38,9 @@ public class RoundRobin extends ProcessSimulation {
 			}
 		}
 		this.removeProcesses();
-		//once execution has finished, callback to the GUI
+		//once execution has finished, callback to the GUI 
 		//get data asynchronously (since gui time and schedulers time are different)
 		gui.displayAverageResults(getApplication(), getScheduler(), getAverageTurnAroundTime(), getAverageWaitingTime(), getThroughput());
-		//gui.displayOverallResults(getApplication(), calculateOverallTurnAroundTime(), calculateOverallWaitingTime(), calculateOverallThroughput());
 	}
 
 	public void setData(String[] appProcessNames, int[] appProcessBurstTimes) {
