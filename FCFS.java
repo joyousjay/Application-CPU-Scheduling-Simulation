@@ -38,8 +38,9 @@ public class FCFS extends ProcessSimulation {
 	public void setData(String[] appProcessNames, int[] appProcessBurstTimes) {
 		for (int i = 0; i < appProcessNames.length; i++) {
 			addProcess(new Process(appProcessNames[i], appProcessBurstTimes[i]));
-			//System.out.println(processList.get(i) +" "+ i);
+			System.out.println("FCFS " + processList.get(i) +" "+ i);
 		}
+		
 	}
 
 }

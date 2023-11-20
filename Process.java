@@ -1,6 +1,7 @@
 import java.lang.Thread;
 
 public class Process {
+    //name of process
     String processId;
     //time process is takes to complete execution
     long burstTime;

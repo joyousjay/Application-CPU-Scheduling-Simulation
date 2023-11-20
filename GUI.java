@@ -23,50 +23,27 @@ public class GUI implements TableModelListener {
     RoundRobin rr = new RoundRobin(this);
 
     DefaultTableModel appModel = new DefaultTableModel();
-
-    String[] microsoftOutlookProcesses = { "P1", "P2", "P3" };
-    int[] microsoftOutlookProcessesArrivalOrder = { 1, 2, 3 };
-    int[] microsoftOutlookProcessesBurstTimes = {2, 4, 6};
-    Object[][] outlookData = {
-        {microsoftOutlookProcesses[0], microsoftOutlookProcessesArrivalOrder[0], microsoftOutlookProcessesBurstTimes[0] },
-        {microsoftOutlookProcesses[1], microsoftOutlookProcessesArrivalOrder[1], microsoftOutlookProcessesBurstTimes[1] },
-        {microsoftOutlookProcesses[2], microsoftOutlookProcessesArrivalOrder[2], microsoftOutlookProcessesBurstTimes[2] }
-    };
+    
+    /* application information */
+    String[] msOutlookProcesses = { "P1", "P2", "P3" };
+    int[] msOutlookProcessesArrivalOrder = { 1, 2, 3 };
+    int[] msOutlookProcessesBurstTimes = {2, 4, 6 };
 
     String[] youtubeProcesses = { "P1", "P2", "P3", "P4", "P5", "P6" };
     int[] youtubeProcessesArrivalOrder = { 1, 2, 3, 4, 5, 6 };
     int[] youtubeProcessesBurstTimes = { 11, 9, 7, 5, 3, 1 };
-    Object[][] youtubeData = {
-        { youtubeProcesses[0], youtubeProcessesArrivalOrder[0], youtubeProcessesBurstTimes[0] },
-        { youtubeProcesses[1], youtubeProcessesArrivalOrder[1], youtubeProcessesBurstTimes[1] },
-        { youtubeProcesses[2], youtubeProcessesArrivalOrder[2], youtubeProcessesBurstTimes[2] },
-        { youtubeProcesses[3], youtubeProcessesArrivalOrder[3], youtubeProcessesBurstTimes[3] },
-        { youtubeProcesses[4], youtubeProcessesArrivalOrder[4], youtubeProcessesBurstTimes[4] },
-        { youtubeProcesses[5], youtubeProcessesArrivalOrder[5], youtubeProcessesBurstTimes[5] }
-    };
 
-    String[] googleChromeProcesses = { "P1", "P2", "P3", "P4", "P5", "P6", "P7" , "P8" , "P9" , "P10" };
-    int[] googleChromeProcessesArrivalOrder = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-    int[] googleChromeProcessesBurstTimes = { 3, 6, 9, 12, 15, 18, 21, 24, 27, 30 };
-    Object[][] chromeData = {
-        { googleChromeProcesses[0], googleChromeProcessesArrivalOrder[0], googleChromeProcessesBurstTimes[0] },
-        { googleChromeProcesses[1], googleChromeProcessesArrivalOrder[1], googleChromeProcessesBurstTimes[1] },
-        { googleChromeProcesses[2], googleChromeProcessesArrivalOrder[2], googleChromeProcessesBurstTimes[2] },
-        { googleChromeProcesses[3], googleChromeProcessesArrivalOrder[3], googleChromeProcessesBurstTimes[3] },
-        { googleChromeProcesses[4], googleChromeProcessesArrivalOrder[4], googleChromeProcessesBurstTimes[4] },
-        { googleChromeProcesses[5], googleChromeProcessesArrivalOrder[5], googleChromeProcessesBurstTimes[5] }, 
-        { googleChromeProcesses[6], googleChromeProcessesArrivalOrder[6], googleChromeProcessesBurstTimes[6] }, 
-        { googleChromeProcesses[7], googleChromeProcessesArrivalOrder[7], googleChromeProcessesBurstTimes[7] }, 
-        { googleChromeProcesses[8], googleChromeProcessesArrivalOrder[8], googleChromeProcessesBurstTimes[8] }, 
-        { googleChromeProcesses[9], googleChromeProcessesArrivalOrder[9], googleChromeProcessesBurstTimes[9] } 
-
-    };
+    String[] chromeProcesses = { "P1", "P2", "P3", "P4", "P5", "P6", "P7" , "P8" , "P9" , "P10" };
+    int[] chromeProcessesArrivalOrder = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    int[] chromeProcessesBurstTimes = { 3, 6, 9, 12, 15, 18, 21, 24, 27, 30 };
 
     public GUI() {
 
     }
 
     public void create() {
+        JTextField textField = new JTextField("Loading...");
+        textField.setVisible(false);
         microsoftOutlook = new JRadioButton("Microsoft Outlook");
         youtube = new JRadioButton("YouTube");
         googleChrome = new JRadioButton("Google Chrome");
@@ -115,10 +92,17 @@ public class GUI implements TableModelListener {
         
         panel.add(simulate);
         panel.add(reset);
+        
+        panelTwo.add(textField);
 
         panelTwo.add(new JScrollPane(appTable));
-
+      
+        frame.setSize(1200, 1200);
+        frame.setVisible(true);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+      
         // clear user selection of application
+        //FIX!! NOT WORKING PROPERLY (not removing correct tables)
         reset.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -126,9 +110,6 @@ public class GUI implements TableModelListener {
                 for (int i = 1; i < panelTwo.getComponentCount(); i++){
                     panelTwo.remove(i);
                 }
-                // if (panelTwo.getComponentCount() > 1) {
-                //     panelTwo.removeAll();
-                // }
                 try {
                     fcfs.join();
                 } catch (InterruptedException e1) {
@@ -159,28 +140,23 @@ public class GUI implements TableModelListener {
                 appModel.setRowCount(0);
                 averageResultsTable.setModel(averageModel);
                 overallResultsTable.setModel(overallModel);
-               // appTable.setModel(appModel);
+                //appTable.setModel(appModel);
                 //reset panel
                 panelTwo.revalidate();
                 panelTwo.repaint();
             }
         });
         // display table and results of CPU Scheduling algorithm
-        // FIX: take in user changing the burst time values
         microsoftOutlook.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // table.setRowCount(0);
                 if (microsoftOutlook.isSelected()) {
-                    // if (panelTwo.getComponentCount() > 0) {
-                    //     panelTwo.remove(0);
-                    // }
-                    // DefaultTableModel appModel = new DefaultTableModel();
                     appModel.setRowCount(0);
-                    for (int i = 0; i < outlookData.length; i++){
-                        appModel.addRow(outlookData[i]);
+                    for (int i = 0; i < msOutlookProcesses.length; i++){
+                        Object[] outlookData = {msOutlookProcesses[i], msOutlookProcessesArrivalOrder[i], msOutlookProcessesBurstTimes[i]};
+                        appModel.addRow(outlookData);
                     }
-                    
+        
                     appTable.setModel(appModel);
                     appTable.setPreferredScrollableViewportSize(new Dimension(350, 350));
                     panelTwo.repaint();
@@ -196,12 +172,10 @@ public class GUI implements TableModelListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (youtube.isSelected()) {
-                    // if (panelTwo.getComponentCount() > 0) {
-                    //     panelTwo.remove(0);
-                    // }
                     appModel.setRowCount(0);
-                    for (int i = 0; i < youtubeData.length; i++){
-                        appModel.addRow(youtubeData[i]);
+                    for (int i = 0; i < youtubeProcesses.length; i++){
+                        Object[] youtubeData = {youtubeProcesses[i], youtubeProcessesArrivalOrder[i], youtubeProcessesBurstTimes[i]};
+                        appModel.addRow(youtubeData);
                     }
                     appTable.setModel(appModel);
                     appTable.setPreferredScrollableViewportSize(new Dimension(350, 350));
@@ -217,12 +191,10 @@ public class GUI implements TableModelListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (googleChrome.isSelected()) {
-                    // if (panelTwo.getComponentCount() > 0) {
-                    //     panelTwo.remove(0);
-                    // }
                     appModel.setRowCount(0);
-                    for (int i = 0; i < chromeData.length; i++){
-                        appModel.addRow(chromeData[i]);
+                    for (int i = 0; i < chromeProcesses.length; i++){
+                        Object[] chromeData = {chromeProcesses[i], chromeProcessesArrivalOrder[i], chromeProcessesBurstTimes[i]};
+                        appModel.addRow(chromeData);
                     }
                     appTable.setModel(appModel);
                     appTable.setPreferredScrollableViewportSize(new Dimension(350, 350));
@@ -235,20 +207,23 @@ public class GUI implements TableModelListener {
             }
         });
         
-        
         simulate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                textField.setVisible(true);
+                JOptionPane.showMessageDialog(panelTwo, textField, "Waiting to Execute", JOptionPane.PLAIN_MESSAGE);
+                panelTwo.revalidate();
+                panelTwo.repaint();
                 // need to appear when simulate button is clicked
                 if (microsoftOutlook.isSelected()) {
                     fcfs.setApplication("Microsoft Outlook");
-                    fcfs.setData(microsoftOutlookProcesses, microsoftOutlookProcessesBurstTimes);
+                    fcfs.setData(msOutlookProcesses, msOutlookProcessesBurstTimes);
                     sjf.setApplication("Microsoft Outlook");
-                    sjf.setData(microsoftOutlookProcesses, microsoftOutlookProcessesBurstTimes);
+                    sjf.setData(msOutlookProcesses, msOutlookProcessesBurstTimes);
                     ljf.setApplication("Microsoft Outlook");
-                    ljf.setData(microsoftOutlookProcesses, microsoftOutlookProcessesBurstTimes);
+                    ljf.setData(msOutlookProcesses, msOutlookProcessesBurstTimes);
                     rr.setApplication("Microsoft Outlook");
-                    rr.setData(microsoftOutlookProcesses, microsoftOutlookProcessesBurstTimes);
+                    rr.setData(msOutlookProcesses, msOutlookProcessesBurstTimes);
                 }
                 if (youtube.isSelected()) {
                     fcfs.setApplication("YouTube");
@@ -262,13 +237,13 @@ public class GUI implements TableModelListener {
                 }
                 if (googleChrome.isSelected()){
                     fcfs.setApplication("Google Chrome");
-                    fcfs.setData(googleChromeProcesses, googleChromeProcessesBurstTimes);
+                    fcfs.setData(chromeProcesses, chromeProcessesBurstTimes);
                     sjf.setApplication("Google Chrome");
-                    sjf.setData(googleChromeProcesses, googleChromeProcessesBurstTimes);
+                    sjf.setData(chromeProcesses, chromeProcessesBurstTimes);
                     ljf.setApplication("Google Chrome");
-                    ljf.setData(googleChromeProcesses, googleChromeProcessesBurstTimes);
+                    ljf.setData(chromeProcesses, chromeProcessesBurstTimes);
                     rr.setApplication("Google Chrome");
-                    rr.setData(googleChromeProcesses, googleChromeProcessesBurstTimes);
+                    rr.setData(chromeProcesses, chromeProcessesBurstTimes);
                 }
                 fcfs.setScheduler("FCFS");
                 sjf.setScheduler("SJF");
@@ -290,18 +265,17 @@ public class GUI implements TableModelListener {
                         // TODO Auto-generated catch block
                         e1.printStackTrace();
                 }
-                //System.out.println("am I reaching here " + fcfs.getApplication());
                 displayOverallResults(fcfs.getApplication(), 
                     ProcessSimulation.calculateOverallTurnAroundTime(fcfs, sjf, ljf, rr), 
                     ProcessSimulation.calculateOverallWaitingTime(fcfs, sjf, ljf, rr), 
                     ProcessSimulation.calculateOverallThroughput(fcfs, sjf, ljf, rr));
-            }
-        });          
-        frame.setSize(1200, 1200);
-        frame.setVisible(true);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+                // textField.setVisible(false);
+                
+                
+            } 
+        });
+    } // end of create method
 
-    }
     /* method to display average results for every scheduler associated with an application on table in gui */
     public void displayAverageResults(String application, String scheduler, double turnaround, double waiting, double throughput) {
         Object[] data = {application, scheduler, turnaround, waiting, throughput};
@@ -309,7 +283,7 @@ public class GUI implements TableModelListener {
         model.addRow(data);
         averageResultsTable.setModel(model);
         averageResultsTable.setGridColor(Color.gray);
-        averageResultsTable.setPreferredScrollableViewportSize(new Dimension(650, 170));
+        averageResultsTable.setPreferredScrollableViewportSize(new Dimension(650, 350));
         panelTwo.add(new JScrollPane(averageResultsTable));
         panelTwo.setVisible(true);
         frame.setVisible(true);
@@ -322,7 +296,7 @@ public class GUI implements TableModelListener {
         overallModel.addRow(overallData);
         overallResultsTable.setModel(overallModel);
         overallResultsTable.setGridColor(Color.gray);
-        overallResultsTable.setPreferredScrollableViewportSize(new Dimension(650, 170));
+        overallResultsTable.setPreferredScrollableViewportSize(new Dimension(650, 350));
         panelTwo.add(new JScrollPane(overallResultsTable));
         panelTwo.setVisible(true);
         frame.setVisible(true);
@@ -333,13 +307,18 @@ public class GUI implements TableModelListener {
         ljf = new LJF(this);
         rr = new RoundRobin(this);   
     }
-    /* method for when user input is taken in to modify burst times for an application's process */
+    /* method for when user input is taken in to modify burst times for an application's process
+     * called only when the burst times is modified by user input 
+    */
     @Override
     public void tableChanged(TableModelEvent e) {
-        for (int i = 0; i < appModel.getRowCount(); i++){
-                        
+        DefaultTableModel updatedAppModel; 
+        //check if column index corresponds to burst times column
+        if (e.getColumn() == 2) {
+            updatedAppModel = (DefaultTableModel) e.getSource();
+            this.msOutlookProcessesBurstTimes[e.getFirstRow()] = Integer.parseInt((String)updatedAppModel.getValueAt(e.getFirstRow(), e.getColumn()));
+            this.youtubeProcessesBurstTimes[e.getFirstRow()] = Integer.parseInt((String)updatedAppModel.getValueAt(e.getFirstRow(), e.getColumn()));
+            this.chromeProcessesBurstTimes[e.getFirstRow()] = Integer.parseInt((String)updatedAppModel.getValueAt(e.getFirstRow(), e.getColumn()));
         }
-        // TODO Auto-generated method stub
-        //throw new UnsupportedOperationException("Unimplemented method 'tableChanged'");
     }
 }

@@ -25,7 +25,7 @@ public class RoundRobin extends ProcessSimulation {
 		long timeQuantum = 2;
 		finishedRunProcessList.addAll(processList);
 		for (int i = 0; i < processList.size(); i++) {
-			System.out.println("rr: " + processList.get(i) + " " + processList.get(i).getRemainingTime());
+			//System.out.println("rr: " + processList.get(i) + " " + processList.get(i).getRemainingTime());
 			if (processList.get(i).getRemainingTime() > timeQuantum) {
 				processList.get(i).setRemainingTime(processList.get(i).getRemainingTime() - timeQuantum);
 				processList.get(i).runProcess(timeQuantum);

@@ -12,7 +12,9 @@ public abstract class ProcessSimulation extends Thread {
 
    // invokes simulate method in schedulers 
    public void run() {
+      System.out.println("loading");
       simulate();
+      System.out.println("finished");
    }
    
    public void setApplication(String application){
