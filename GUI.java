@@ -3,7 +3,6 @@ import javax.swing.border.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
-
 import java.awt.*;
 import java.awt.event.*;
 
@@ -13,10 +12,13 @@ public class GUI implements TableModelListener {
     JTable averageResultsTable= new JTable(); //table to display average results of every schedulder
     JTable overallResultsTable = new JTable(); //table to display overall results of an application
     JFrame frame = new JFrame();
+    JFrame textFrame = new JFrame();
     JRadioButton microsoftOutlook, youtube, googleChrome;
-    // each row is a panel
+    // each row in frame is a panel
     JPanel panel = new JPanel();
     JPanel panelTwo = new JPanel();
+    JPanel panelThree = new JPanel();
+    //scheduler objects
     FCFS fcfs = new FCFS(this);
     SJF sjf = new SJF(this);
     LJF ljf = new LJF(this);
@@ -42,8 +44,7 @@ public class GUI implements TableModelListener {
     }
 
     public void create() {
-        JTextField textField = new JTextField("Loading...");
-        textField.setVisible(false);
+        //textField.setVisible(false);
         microsoftOutlook = new JRadioButton("Microsoft Outlook");
         youtube = new JRadioButton("YouTube");
         googleChrome = new JRadioButton("Google Chrome");
@@ -58,7 +59,7 @@ public class GUI implements TableModelListener {
                 "Application CPU Scheduler Simulation", TitledBorder.CENTER, TitledBorder.TOP));
         frame.add(panel, BorderLayout.NORTH);
         frame.add(panelTwo, BorderLayout.CENTER);
-
+        
         // add button to GUI screen
         panel.add(microsoftOutlook);
         panel.add(youtube);
@@ -69,6 +70,7 @@ public class GUI implements TableModelListener {
             appModel.addColumn(columnNames[i]);
         }
         appModel.addTableModelListener(this);
+        panelTwo.add(new JScrollPane(appTable));
 
         DefaultTableModel averageModel = (DefaultTableModel) averageResultsTable.getModel();
         String[] averageResultsColumnNames = {"Application", "Scheduler", "Average Turnaround time", "Average Waiting time", "Throughput" };
@@ -93,59 +95,62 @@ public class GUI implements TableModelListener {
         panel.add(simulate);
         panel.add(reset);
         
-        panelTwo.add(textField);
+       // panelTwo.add(textField);
+        JTextField textField = new JTextField("Loading...");
+        textField.setBorder(BorderFactory.createTitledBorder("Load results"));
+        textField.setHorizontalAlignment(JTextField.CENTER);
+        textField.setSize(200,200);
+        //panelThree.setLayout(new BorderLayout());
+        //panelThree.add(textField, BorderLayout.CENTER);
+        textFrame.add(new JScrollPane(textField), BorderLayout.CENTER);
+        textField.setText("Loading...");
+        textField.setForeground(Color.BLACK);
+        textField.setBackground(Color.BLUE);
+        textField.setFont(new Font("SansSerif", Font.PLAIN, 20));
+        //textFrame.add(panelThree);
+        textFrame.setLocationRelativeTo(panelTwo);
+        textFrame.setSize(160, 160);
+        textFrame.setVisible(true);
+        textFrame.setBackground(Color.GRAY);
+        textFrame.setVisible(false);
+       // textFrame.pack();
 
-        panelTwo.add(new JScrollPane(appTable));
-      
         frame.setSize(1200, 1200);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
       
         // clear user selection of application
-        //FIX!! NOT WORKING PROPERLY (not removing correct tables)
         reset.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                applicationButtonGroup.clearSelection();
-                for (int i = 1; i < panelTwo.getComponentCount(); i++){
-                    panelTwo.remove(i);
-                }
                 try {
                     fcfs.join();
-                } catch (InterruptedException e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
-                }
-                try {
                     sjf.join();
-                } catch (InterruptedException e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
-                }
-                try {
                     ljf.join();
-                } catch (InterruptedException e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
-                }
-                try {
                     rr.join();
                 } catch (InterruptedException e1) {
                     // TODO Auto-generated catch block
                     e1.printStackTrace();
                 }
+                applicationButtonGroup.clearSelection();
+                // loop through the components of panelTwo and remove every component object except the first one
+                Component[] components = panelTwo.getComponents();
+                for (int i = 1; i < components.length; i++) {
+                    panelTwo.remove(components[i]);
+                }
                 //remove rows from default model and reset model
+                appModel.setRowCount(0);
                 averageModel.setRowCount(0);
                 overallModel.setRowCount(0);
-                appModel.setRowCount(0);
+                appTable.setModel(appModel);
                 averageResultsTable.setModel(averageModel);
                 overallResultsTable.setModel(overallModel);
-                //appTable.setModel(appModel);
                 //reset panel
                 panelTwo.revalidate();
                 panelTwo.repaint();
             }
         });
+
         // display table and results of CPU Scheduling algorithm
         microsoftOutlook.addActionListener(new ActionListener() {
             @Override
@@ -210,11 +215,14 @@ public class GUI implements TableModelListener {
         simulate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                SwingUtilities.invokeLater(()->{
                 textField.setVisible(true);
-                JOptionPane.showMessageDialog(panelTwo, textField, "Waiting to Execute", JOptionPane.PLAIN_MESSAGE);
-                panelTwo.revalidate();
-                panelTwo.repaint();
-                // need to appear when simulate button is clicked
+                panelThree.setVisible(true);
+                textFrame.setVisible(true);
+                //JOptionPane.showMessageDialog(panelThree, textField, "Waiting to Execute", JOptionPane.PLAIN_MESSAGE);
+                panelThree.revalidate();
+                panelThree.repaint();
+                //
                 if (microsoftOutlook.isSelected()) {
                     fcfs.setApplication("Microsoft Outlook");
                     fcfs.setData(msOutlookProcesses, msOutlookProcessesBurstTimes);
@@ -254,7 +262,7 @@ public class GUI implements TableModelListener {
                 sjf.start();
                 ljf.start();
                 rr.start();
-                //cause threads to wait before ending
+                //causes threads to wait before ending
                 try {
                     fcfs.join();
                     sjf.join();
@@ -265,13 +273,18 @@ public class GUI implements TableModelListener {
                         // TODO Auto-generated catch block
                         e1.printStackTrace();
                 }
+
                 displayOverallResults(fcfs.getApplication(), 
                     ProcessSimulation.calculateOverallTurnAroundTime(fcfs, sjf, ljf, rr), 
                     ProcessSimulation.calculateOverallWaitingTime(fcfs, sjf, ljf, rr), 
                     ProcessSimulation.calculateOverallThroughput(fcfs, sjf, ljf, rr));
-                // textField.setVisible(false);
-                
-                
+            });
+            SwingUtilities.invokeLater(()->{
+                 textField.setVisible(false); 
+                panelThree.setVisible(false);
+                textFrame.setVisible(false);   
+            });
+               
             } 
         });
     } // end of create method
@@ -315,6 +328,7 @@ public class GUI implements TableModelListener {
         DefaultTableModel updatedAppModel; 
         //check if column index corresponds to burst times column
         if (e.getColumn() == 2) {
+            //store the user input where the chnage took place into the index within the array of the appropriate process and application
             updatedAppModel = (DefaultTableModel) e.getSource();
             this.msOutlookProcessesBurstTimes[e.getFirstRow()] = Integer.parseInt((String)updatedAppModel.getValueAt(e.getFirstRow(), e.getColumn()));
             this.youtubeProcessesBurstTimes[e.getFirstRow()] = Integer.parseInt((String)updatedAppModel.getValueAt(e.getFirstRow(), e.getColumn()));
