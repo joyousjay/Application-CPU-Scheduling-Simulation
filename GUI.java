@@ -5,6 +5,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 public class GUI implements TableModelListener {
     /* global variables */
@@ -14,17 +15,18 @@ public class GUI implements TableModelListener {
     JFrame frame = new JFrame();
     JFrame textFrame = new JFrame();
     JRadioButton microsoftOutlook, youtube, googleChrome;
-    // each row in frame is a panel
-    JPanel panel = new JPanel();
-    JPanel panelTwo = new JPanel();
-    JPanel panelThree = new JPanel();
-    //scheduler objects
-    FCFS fcfs = new FCFS(this);
-    SJF sjf = new SJF(this);
-    LJF ljf = new LJF(this);
-    RoundRobin rr = new RoundRobin(this);
+   
+    JPanel panel = new JPanel(); //holds the application, simulate, and reset buttons
+    JPanel panelTwo = new JPanel(); //holds the table displayed 
+    JPanel panelThree = new JPanel(); //holds the loading popup for when simulate is selected
+    
+    //CPU scheduler objects
+    FCFS fcfs = new FCFS(this); //First Come First Serve
+    SJF sjf = new SJF(this); //Shortest Job First
+    LJF ljf = new LJF(this);//Longest Job First
+    RoundRobin rr = new RoundRobin(this);//Round Robin
 
-    DefaultTableModel appModel = new DefaultTableModel();
+    DefaultTableModel appModel = new DefaultTableModel(); //data for the application table 
     
     /* application information */
     String[] msOutlookProcesses = { "P1", "P2", "P3" };
@@ -44,7 +46,7 @@ public class GUI implements TableModelListener {
     }
 
     public void create() {
-        //textField.setVisible(false);
+        /* buttons for the user to click on an application to simulate */
         microsoftOutlook = new JRadioButton("Microsoft Outlook");
         youtube = new JRadioButton("YouTube");
         googleChrome = new JRadioButton("Google Chrome");
@@ -74,13 +76,12 @@ public class GUI implements TableModelListener {
 
         DefaultTableModel averageModel = (DefaultTableModel) averageResultsTable.getModel();
         String[] averageResultsColumnNames = {"Application", "Scheduler", "Average Turnaround time", "Average Waiting time", "Throughput" };
-        averageResultsTable= new JTable();
+        averageResultsTable = new JTable();
         for (int i = 0; i < averageResultsColumnNames.length; i++){
             averageModel.addColumn(averageResultsColumnNames[i]);
         }
         averageResultsTable.setModel(averageModel);
 
-    
         DefaultTableModel overallModel = (DefaultTableModel) overallResultsTable.getModel();
         String[] overallResultColumnNames = {"Application", "Overall Turnaround time", "Overall Waiting time", "Overall Throughput" };
         overallResultsTable = new JTable();
@@ -95,31 +96,31 @@ public class GUI implements TableModelListener {
         panel.add(simulate);
         panel.add(reset);
         
-       // panelTwo.add(textField);
+       
         JTextField textField = new JTextField("Loading...");
         textField.setBorder(BorderFactory.createTitledBorder("Load results"));
         textField.setHorizontalAlignment(JTextField.CENTER);
         textField.setSize(200,200);
-        //panelThree.setLayout(new BorderLayout());
-        //panelThree.add(textField, BorderLayout.CENTER);
-        textFrame.add(new JScrollPane(textField), BorderLayout.CENTER);
-        textField.setText("Loading...");
+       // textField.setText("Loading...");
         textField.setForeground(Color.BLACK);
         textField.setBackground(Color.BLUE);
+        panelThree.add(new JScrollPane(textField), BorderLayout.CENTER);
+        panelThree.setLayout(new BorderLayout());
+        //textFrame.add(new JScrollPane(textField), BorderLayout.CENTER);
         textField.setFont(new Font("SansSerif", Font.PLAIN, 20));
-        //textFrame.add(panelThree);
+        textFrame.add(panelThree);
         textFrame.setLocationRelativeTo(panelTwo);
         textFrame.setSize(160, 160);
-        textFrame.setVisible(true);
-        textFrame.setBackground(Color.GRAY);
-        textFrame.setVisible(false);
+        //textFrame.setVisible(true);
+        //textFrame.setBackground(Color.GRAY);
+        //textFrame.setVisible(false);
        // textFrame.pack();
 
         frame.setSize(1200, 1200);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
       
-        // clear user selection of application
+        // clears user selection of application and removes the data results associated with user interaction
         reset.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -132,11 +133,12 @@ public class GUI implements TableModelListener {
                     // TODO Auto-generated catch block
                     e1.printStackTrace();
                 }
+                //clear the application radio button choice
                 applicationButtonGroup.clearSelection();
                 // loop through the components of panelTwo and remove every component object except the first one
-                Component[] components = panelTwo.getComponents();
-                for (int i = 1; i < components.length; i++) {
-                    panelTwo.remove(components[i]);
+                Component[] panelTwoComponents = panelTwo.getComponents();
+                for (int i = 1; i < panelTwoComponents.length; i++) {
+                    panelTwo.remove(panelTwoComponents[i]);
                 }
                 //remove rows from default model and reset model
                 appModel.setRowCount(0);
@@ -215,13 +217,13 @@ public class GUI implements TableModelListener {
         simulate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                SwingUtilities.invokeLater(()->{
+                //SwingUtilities.invokeLater(()->{
                 textField.setVisible(true);
                 panelThree.setVisible(true);
                 textFrame.setVisible(true);
                 //JOptionPane.showMessageDialog(panelThree, textField, "Waiting to Execute", JOptionPane.PLAIN_MESSAGE);
-                panelThree.revalidate();
-                panelThree.repaint();
+                // panelThree.revalidate();
+                // panelThree.repaint();
                 //
                 if (microsoftOutlook.isSelected()) {
                     fcfs.setApplication("Microsoft Outlook");
@@ -278,12 +280,12 @@ public class GUI implements TableModelListener {
                     ProcessSimulation.calculateOverallTurnAroundTime(fcfs, sjf, ljf, rr), 
                     ProcessSimulation.calculateOverallWaitingTime(fcfs, sjf, ljf, rr), 
                     ProcessSimulation.calculateOverallThroughput(fcfs, sjf, ljf, rr));
-            });
-            SwingUtilities.invokeLater(()->{
-                 textField.setVisible(false); 
+           // });
+           // SwingUtilities.invokeLater(()->{
+                textField.setVisible(false); 
                 panelThree.setVisible(false);
                 textFrame.setVisible(false);   
-            });
+           // });
                
             } 
         });
