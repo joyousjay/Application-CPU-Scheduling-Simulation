@@ -9,6 +9,9 @@ public class LJF extends ProcessSimulation{
     }
 
     public void removeProcesses() {
+    /* loop through process list, 
+		 * remove every process that has ran and add it to new list
+		 */
       for (int i = 0; i < processList.size(); i++) {
         Process process = processList.remove(i);
         finishedRunProcessList.add(process);
@@ -31,13 +34,7 @@ public class LJF extends ProcessSimulation{
       this.removeProcesses();
       //once execution has finished, callback to the GUI
 		  //get data asynchronously (since gui time and schedulers time are different)
-      gui.displayAverageResults(getApplication(), getScheduler(), getAverageTurnAroundTime(), getAverageWaitingTime(), getThroughput());
+      gui.displayAverageResults(getApplication().getName(), getScheduler(), getAverageTurnAroundTime(), getAverageWaitingTime(), getThroughput());
         
-    }
-    
-    public void setData(String[] appProcessNames, int[] appProcessBurstTimes) {
-      for (int i = 0; i < appProcessNames.length; i++) {
-        addProcess(new Process(appProcessNames[i], appProcessBurstTimes[i]));
-      }
     }
 }

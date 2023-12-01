@@ -14,6 +14,9 @@ public class FCFS extends ProcessSimulation {
 	}
 
 	public void removeProcesses() {
+		/* loop through process list, 
+		 * remove every process that has ran and add it to new list
+		 */
 		for (int i = 0; i < processList.size(); i++) {
 			Process process = processList.remove(i);
 			finishedRunProcessList.add(process);
@@ -27,20 +30,11 @@ public class FCFS extends ProcessSimulation {
 			processList.get(i).setCompletionTime(System.currentTimeMillis());
 			//System.out.println("is it working?");
 		}
-		this.removeProcesses();
+		this.removeProcesses(); 
 		
 		//once execution has finished, callback to the GUI
 		//get data asynchronously (since gui time and schedulers time are different)
-		gui.displayAverageResults(getApplication(), getScheduler(), getAverageTurnAroundTime(), getAverageWaitingTime(), getThroughput());
-	}
-	
-	//set the application's process names and its burst times
-	public void setData(String[] appProcessNames, int[] appProcessBurstTimes) {
-		for (int i = 0; i < appProcessNames.length; i++) {
-			addProcess(new Process(appProcessNames[i], appProcessBurstTimes[i]));
-			System.out.println("FCFS " + processList.get(i) +" "+ i);
-		}
-		
+		gui.displayAverageResults(getApplication().getName(), getScheduler(), getAverageTurnAroundTime(), getAverageWaitingTime(), getThroughput());
 	}
 
 }

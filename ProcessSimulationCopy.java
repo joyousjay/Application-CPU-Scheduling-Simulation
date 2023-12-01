@@ -1,13 +1,13 @@
 import java.util.ArrayList;
 
-public abstract class ProcessSimulation extends Thread {
+public abstract class ProcessSimulationCopy extends Thread {
 
    abstract public void addProcess(Process process);
    abstract void simulate();
 
    ArrayList<Process> processList = new ArrayList<>();
    ArrayList<Process> finishedRunProcessList = new ArrayList<>();
-   private Application application;
+   private String application;
    private String scheduler;
 
    // invokes simulate method in schedulers 
@@ -16,25 +16,23 @@ public abstract class ProcessSimulation extends Thread {
       simulate();
       System.out.println("finished");
    }
-
-   //sets the application details for an applicarion
-   public void setApplication(Application application){
+   
+   public void setApplication(String application){
       this.application = application;
-      setData();
    }
-   //gets application
-   public Application getApplication(){
-      return application;
+
+   public String getApplication(){
+      return this.application;
    }
-   //sets the names of the cpu schedulers 
+
    public void setScheduler(String scheduler){
       this.scheduler = scheduler;
    }
 
-   //get the cpu scheduler
    public String getScheduler(){
       return this.scheduler;
    }
+
    
    //results from all processes in one scheduling algorithm
    public double getAverageWaitingTime() {
@@ -67,23 +65,13 @@ public abstract class ProcessSimulation extends Thread {
       return (finishedRunProcessList.size()/sumOfCompletionTimes);
    }
 
-   /* final results of all processes' data from every scheduling algorithm 
-    * retrieves the overall turnaround time, overall waiting time, and overall throughput
-   */
+   /* final results of all processes' data from every scheduling algorithm */
    static public double calculateOverallTurnAroundTime(ProcessSimulation... processSchedulers) {
       double sumOfSchedulersTurnAroundTimes = 0.0;
       for (ProcessSimulation processScheduler : processSchedulers) {
           sumOfSchedulersTurnAroundTimes += processScheduler.getAverageTurnAroundTime();
       }
       return (sumOfSchedulersTurnAroundTimes / processSchedulers.length);
-   }
-
-   static public double calculateOverallWaitingTime(ProcessSimulation... processSchedulers) {
-      double sumOfSchedulersWaitingTime = 0.0;
-      for (ProcessSimulation processScheduler : processSchedulers) {
-          sumOfSchedulersWaitingTime += processScheduler.getAverageWaitingTime();
-      }
-      return (sumOfSchedulersWaitingTime / processSchedulers.length);
    }
 
   static public double calculateOverallThroughput(ProcessSimulation... processSchedulers) {
@@ -93,11 +81,12 @@ public abstract class ProcessSimulation extends Thread {
       }
       return (sumOfSchedulersThroughput / processSchedulers.length);
    }
-   //set the application's process names and its burst times
-   public void setData() {
-		Application app = getApplication();
-		for (int i = 0; i < app.getProcesses().length; i++) {
-			addProcess(new Process(app.getProcesses()[i], app.getBurstTimes()[i]));
-		}	
-	}
+
+  static public double calculateOverallWaitingTime(ProcessSimulation... processSchedulers) {
+      double sumOfSchedulersWaitingTime = 0.0;
+      for (ProcessSimulation processScheduler : processSchedulers) {
+          sumOfSchedulersWaitingTime += processScheduler.getAverageWaitingTime();
+      }
+      return (sumOfSchedulersWaitingTime / processSchedulers.length);
+   }
 }

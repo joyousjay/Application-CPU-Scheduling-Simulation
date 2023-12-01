@@ -70,7 +70,6 @@ public class Process {
         try {
             Thread.sleep(timeQuantum);
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
