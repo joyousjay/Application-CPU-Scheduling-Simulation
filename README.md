@@ -10,4 +10,4 @@ Choose one of the application programs provided and click on the **simulate** bu
 
 You are able to change the burst times of an application. When an application that has modified burst times is clicked again, it will maintain the previous change to the burst times. To reset the burst times of the application to the default times, exit the GUI window and restart a new one. 
 
-To reset and choose another application, click on the **reset** button to clear the application selection and the tables generated.
+To reset the simulation, click on the **reset** button to clear the application selection and the tables generated.
