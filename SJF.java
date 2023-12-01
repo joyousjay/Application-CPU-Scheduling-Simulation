@@ -28,7 +28,7 @@ public class SJF extends ProcessSimulation {
 		// sort by ascending (smallest) burst time 
 		processList.sort(Comparator.comparing(Process::getBurstTime));
 		for (int i = 0; i < processList.size(); i++) {
-			//System.out.println(processList.get(i) +" "+ i);
+			System.out.println("sjf: " + processList.get(i) +" "+ i);
 			processList.get(i).runProcess();
 			processList.get(i).setCompletionTime(System.currentTimeMillis());
 		}

@@ -12,7 +12,7 @@ public class Main {
 
         String[] youtubeProcesses = { "P1", "P2", "P3", "P4", "P5", "P6" };
         int[] youtubeProcessesArrivalOrder = { 1, 2, 3, 4, 5, 6 };
-        int[] youtubeProcessesBurstTimes = { 11, 9, 7, 5, 3, 1 };
+        int[] youtubeProcessesBurstTimes = { 1, 3, 5, 7, 9, 11 };
 
         String[] chromeProcesses = { "P1", "P2", "P3", "P4", "P5", "P6", "P7" , "P8" , "P9" , "P10" };
         int[] chromeProcessesArrivalOrder = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};

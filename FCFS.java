@@ -26,9 +26,9 @@ public class FCFS extends ProcessSimulation {
 	public void simulate() {
 		for (int i = 0; i < processList.size(); i++) {
 			// run the process and when it is done remove from queue
+			System.out.println("fcfs: " + processList.get(i) +" "+ i);
 			processList.get(i).runProcess();
 			processList.get(i).setCompletionTime(System.currentTimeMillis());
-			//System.out.println("is it working?");
 		}
 		this.removeProcesses(); 
 		

@@ -27,7 +27,7 @@ public class LJF extends ProcessSimulation{
        //reverse order of burst time (longest to shortest)
       Collections.sort(processList, Collections.reverseOrder(Comparator.comparing(Process::getBurstTime)));
       for (int i = 0; i < processList.size(); i++) {
-       // System.out.println("LJF " + processList.get(i) +" "+ i);
+        System.out.println("ljf " + processList.get(i) +" "+ i);
         processList.get(i).runProcess();
         processList.get(i).setCompletionTime(System.currentTimeMillis());
       }
