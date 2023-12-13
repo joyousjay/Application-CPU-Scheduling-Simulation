@@ -8,6 +8,7 @@ public abstract class ProcessSimulation extends Thread {
    ArrayList<Process> processList = new ArrayList<>();
    ArrayList<Process> finishedRunProcessList = new ArrayList<>();
    private Application application;
+   private ProcessSet processSet;
    private String scheduler;
 
    // invokes simulate method in schedulers 
@@ -18,14 +19,31 @@ public abstract class ProcessSimulation extends Thread {
    }
 
    //sets the application details for an applicarion
-   public void setApplication(Application application){
-      this.application = application;
-      setData();
-   }
+   // public void setApplication(Application application){
+   //    this.application = application;
+   // }
+
    //gets application
    public Application getApplication(){
       return application;
    }
+
+   //set the process set information
+   // public void setProcessSets(ProcessSet processSet){
+   //    this.processSet = processSet;
+   // }
+
+   //get process set
+   public ProcessSet getProcessSet(){
+      return processSet;
+   }
+
+   public void setData(ProcessSet processSet, Application application){
+      this.application = application;
+      this.processSet = processSet;
+      loadProcessDetails();
+   }
+
    //sets the names of the cpu schedulers 
    public void setScheduler(String scheduler){
       this.scheduler = scheduler;
@@ -93,11 +111,10 @@ public abstract class ProcessSimulation extends Thread {
       }
       return (sumOfSchedulersThroughput / processSchedulers.length);
    }
-   //set the application's process names and its burst times
-   public void setData() {
-		Application app = getApplication();
-		for (int i = 0; i < app.getProcesses().length; i++) {
-			addProcess(new Process(app.getProcesses()[i], app.getBurstTimes()[i]));
+   //set the processes' names and processes' burst times for an application's process set size 
+   public void loadProcessDetails() {
+		for (int i = 0; i < processSet.getSize(); i++) {
+			addProcess(new Process(processSet.getProcesses()[i], application.getBurstTimes()[i]));
 		}	
 	}
 }

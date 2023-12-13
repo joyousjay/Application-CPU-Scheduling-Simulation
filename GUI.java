@@ -1,13 +1,11 @@
 import javax.swing.*;
 import javax.swing.border.*;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 
 
-public class GUI implements TableModelListener {
+public class GUI {
     /* global variables */
     JTable appTable = new JTable(); //table to display information about application
     JTable averageResultsTable= new JTable(); //table to display average results of every schedulder
@@ -15,8 +13,8 @@ public class GUI implements TableModelListener {
     JFrame frame = new JFrame();
     JFrame textFrame = new JFrame();
     JRadioButton[] appButtons; //array of application buttons
-   
-    JPanel panel = new JPanel(); //holds the application, simulate, and reset buttons
+    JComboBox<Integer> processCountBox; //list to store process count sizes
+    JPanel panel = new JPanel(); //holds the applications, simulate, and reset buttons
     JPanel panelTwo = new JPanel(new FlowLayout()); //holds the table displayed 
     JDialog popup = new JDialog(frame, "Simulate Executing", true); //holds the loading popup for when simulate is selected
     
@@ -29,20 +27,40 @@ public class GUI implements TableModelListener {
     DefaultTableModel appModel = new DefaultTableModel(); //data for the application table 
     DefaultTableModel averageModel = new DefaultTableModel();
     DefaultTableModel overallModel = new DefaultTableModel();
+    DefaultComboBoxModel<Integer> processCountModel = new DefaultComboBoxModel<>();
     private Application[] applications; //array of applications
-   
+    private ProcessSet[] processSets;
+    JLabel processComboBoxLabel = new JLabel("Process Set Size");
+    
+    //enables scrolling on results table 
+    JScrollPane averagePane = new JScrollPane();
+    JScrollPane overallPane = new JScrollPane();
+
     //class constructor
-    public GUI(Application... applications) {
+    public GUI(ProcessSet[] processSets, Application[] applications) {
         this.applications = applications;
+        this.processSets = processSets;
     }
 
     public void create() {
+
         //creating a radio button for each exisiting application 
         appButtons = new JRadioButton[applications.length];
         for (int i = 0; i < applications.length; i++) {
             appButtons[i] = new JRadioButton(applications[i].getName());
         }
-
+        panelTwo.add(processComboBoxLabel);
+        processCountBox = new JComboBox<Integer>();
+        processCountBox.setModel(processCountModel);
+      
+        //add process set sizes to process count model
+        for (int i = 0; i < processSets.length; i++) {
+           processCountModel.addElement(processSets[i].getSize()); 
+        }
+        panelTwo.add(processCountBox);
+        processCountBox.setVisible(false);
+        processComboBoxLabel.setVisible(false);
+        
         // adding the radiobuttons to a group to enable only one application chosen at a time
         ButtonGroup applicationButtonGroup = new ButtonGroup();
         for (int i = 0; i < appButtons.length; i++) {
@@ -66,7 +84,7 @@ public class GUI implements TableModelListener {
             appModel.addColumn(columnNames[i]);
         }
         appTable.setPreferredScrollableViewportSize(new Dimension(350,350));
-        appModel.addTableModelListener(this);
+        //appModel.addTableModelListener(this);
         panelTwo.add(new JScrollPane(appTable));
        
         //the data being added to the table for the average results of a CPU scheduler for an application
@@ -124,16 +142,22 @@ public class GUI implements TableModelListener {
                 applicationButtonGroup.clearSelection();
                 // loop through the components of panelTwo and remove every component object except the first one
                 Component[] panelTwoComponents = panelTwo.getComponents();
-                for (int i = 1; i < panelTwoComponents.length; i++) {
+                for (int i = 3; i < panelTwoComponents.length; i++) {
                     panelTwo.remove(panelTwoComponents[i]);
                 }
                 //remove rows from default model and reset model
                 appModel.setRowCount(0);
                 averageModel.setRowCount(0);
                 overallModel.setRowCount(0);
+                //set the default process set to set one
+                processCountModel.setSelectedItem(processSets[0].getSize());
                 appTable.setModel(appModel);
+                //regenerate the table model
                 averageResultsTable.setModel(averageModel);
                 overallResultsTable.setModel(overallModel);
+                //remove process count box and label
+                processCountBox.setVisible(false);
+                processComboBoxLabel.setVisible(false);
                 //reset panel
                 panelTwo.revalidate();
                 panelTwo.repaint();
@@ -146,19 +170,19 @@ public class GUI implements TableModelListener {
             int index = i;
             appButtons[i].addActionListener(new ActionListener() {
                 @Override
-                public void actionPerformed(ActionEvent e) {
-                   //for (int j = 0; j < appButtons.length; j++) {
-                       
+                public void actionPerformed(ActionEvent e) {        
                         if (appButtons[index].isSelected()){
                             appModel.setRowCount(0);
-                            // loops through the processes an application from the application list contains
-                            for (int j = 0; j < applications[index].getProcesses().length; j++) {
-                                Object[] appData = {applications[index].getProcesses()[j], applications[index].getArrivalOrders()[j], applications[index].getBurstTimes()[j]};
+                            processComboBoxLabel.setVisible(true);
+                            processCountBox.setVisible(true);
+                           
+                            //sets the default process set size to three
+                            for (int j = 0; j < processSets[0].getSize(); j++) {
+                                Object[] appData = {processSets[0].getProcesses()[j], processSets[0].getArrivalOrders()[j], applications[index].getBurstTimes()[j]};
                                 appModel.addRow(appData);
                             }
 
                             appTable.setModel(appModel);
-                            //appTable.setPreferredScrollableViewportSize(new Dimension(350, 350));
                             panelTwo.repaint();
                             
                             appTable.setGridColor(Color.gray);
@@ -168,20 +192,42 @@ public class GUI implements TableModelListener {
                 }       
             });
         }
+
+        //action listener to when the dropdown value is selected for a specific application
+        processCountBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //loops through array of application buttons to find which individual application is selected
+                for (int i = 0; i < appButtons.length; i++) {
+                    if (appButtons[i].isSelected()) {
+                        appModel.setRowCount(0);
+                        //loop through array of process sets to find which process set is selected and to set the application data
+                        processCountBox.getSelectedItem(); 
+                        //index of the combo box selected is processCountBox.getSelectedIndex()
+                        int comboIndex = processCountBox.getSelectedIndex();
+                        for (int j = 0; j < processSets[comboIndex].getSize(); j++) {
+                            Object[] appData = {processSets[comboIndex].getProcesses()[j], processSets[comboIndex].getArrivalOrders()[j], applications[i].getBurstTimes()[j]};
+                            appModel.addRow(appData);
+                        }
+                    }
+                }
+            }    
+        });
         
         simulate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //sets the application and the application data to each scheduler 
+                //sets the process and application data to each scheduler 
+                int comboIndex = processCountBox.getSelectedIndex();
                 for (int i = 0; i < appButtons.length; i++) {
                     if (appButtons[i].isSelected()) {
-                        fcfs.setApplication(applications[i]);
-                        sjf.setApplication(applications[i]);
-                        ljf.setApplication(applications[i]);
-                        rr.setApplication(applications[i]);         
+                        fcfs.setData(processSets[0], applications[i]);
+                        sjf.setData(processSets[comboIndex], applications[i]);
+                        ljf.setData(processSets[comboIndex], applications[i]);
+                        rr.setData(processSets[comboIndex], applications[i]);       
                     }
                 }
-                
+                //sets the schedulers' names
                 fcfs.setScheduler("FCFS");
                 sjf.setScheduler("SJF");
                 ljf.setScheduler("LJF");
@@ -214,13 +260,11 @@ public class GUI implements TableModelListener {
                 
                 //to allow visual thread to be locked while scheduler threads runs
                 popup.setVisible(true);
-                
 
                 displayOverallResults(fcfs.getApplication().getName(), 
                     ProcessSimulation.calculateOverallTurnAroundTime(fcfs, sjf, ljf, rr), 
                     ProcessSimulation.calculateOverallWaitingTime(fcfs, sjf, ljf, rr), 
-                    ProcessSimulation.calculateOverallThroughput(fcfs, sjf, ljf, rr));
-               
+                    ProcessSimulation.calculateOverallThroughput(fcfs, sjf, ljf, rr));    
             } 
         });
     } // end of create method
@@ -233,7 +277,8 @@ public class GUI implements TableModelListener {
         averageResultsTable.setModel(averageModel);
         averageResultsTable.setGridColor(Color.gray);
         averageResultsTable.setPreferredScrollableViewportSize(new Dimension(600, 350));
-        panelTwo.add(new JScrollPane(averageResultsTable)).setVisible(true);
+        averagePane.setViewportView(averageResultsTable);
+        panelTwo.add((averagePane)).setVisible(true);
         panelTwo.setVisible(true);
         frame.setVisible(true);
         panelTwo.revalidate();
@@ -248,7 +293,8 @@ public class GUI implements TableModelListener {
         overallResultsTable.setModel(overallModel);
         overallResultsTable.setGridColor(Color.gray);
         overallResultsTable.setPreferredScrollableViewportSize(new Dimension(600, 350));
-        panelTwo.add(new JScrollPane(overallResultsTable)).setVisible(true);
+        overallPane.setViewportView(overallResultsTable);
+        panelTwo.add(overallPane).setVisible(true);
         panelTwo.setVisible(true);
         frame.setVisible(true);
         panelTwo.revalidate();
@@ -258,23 +304,5 @@ public class GUI implements TableModelListener {
         sjf = new SJF(this);
         ljf = new LJF(this);
         rr = new RoundRobin(this);   
-    }
-
-    /* method for when user input is taken in to modify burst times for an application's process
-     * called only when the burst times is modified by user input 
-    */
-    @Override
-    public void tableChanged(TableModelEvent e) {
-        DefaultTableModel updatedAppModel; 
-        //check if column index corresponds to burst times column
-        if (e.getColumn() == 2) {
-            //store the user input where the chnage took place into the index within the array of the appropriate process and application
-            updatedAppModel = (DefaultTableModel) e.getSource();
-            for (int i = 0; i < appButtons.length; i++) {
-                if (appButtons[i].isSelected()){
-                    this.applications[i].getBurstTimes()[e.getFirstRow()] = Integer.parseInt((String)updatedAppModel.getValueAt(e.getFirstRow(), e.getColumn()));
-                }
-            }
-        }
     }
 }
