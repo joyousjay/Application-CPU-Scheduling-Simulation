@@ -13,7 +13,7 @@ public class GUI {
     JFrame frame = new JFrame();
     JFrame textFrame = new JFrame();
     JRadioButton[] appButtons; //array of application buttons
-    JComboBox<Integer> processCountBox; //list to store process count sizes
+    JComboBox<Integer> processSetBox; //list to store the process set sizes
     JPanel panel = new JPanel(); //holds the applications, simulate, and reset buttons
     JPanel panelTwo = new JPanel(new FlowLayout()); //holds the table displayed 
     JDialog popup = new JDialog(frame, "Simulate Executing", true); //holds the loading popup for when simulate is selected
@@ -27,7 +27,7 @@ public class GUI {
     DefaultTableModel appModel = new DefaultTableModel(); //data for the application table 
     DefaultTableModel averageModel = new DefaultTableModel();
     DefaultTableModel overallModel = new DefaultTableModel();
-    DefaultComboBoxModel<Integer> processCountModel = new DefaultComboBoxModel<>();
+    DefaultComboBoxModel<Integer> processSetModel = new DefaultComboBoxModel<>();
     private Application[] applications; //array of applications
     private ProcessSet[] processSets;
     JLabel processComboBoxLabel = new JLabel("Process Set Size");
@@ -50,15 +50,15 @@ public class GUI {
             appButtons[i] = new JRadioButton(applications[i].getName());
         }
         panelTwo.add(processComboBoxLabel);
-        processCountBox = new JComboBox<Integer>();
-        processCountBox.setModel(processCountModel);
+        processSetBox = new JComboBox<Integer>();
+        processSetBox.setModel(processSetModel);
       
-        //add process set sizes to process count model
+        //add process set sizes to process set model
         for (int i = 0; i < processSets.length; i++) {
-           processCountModel.addElement(processSets[i].getSize()); 
+           processSetModel.addElement(processSets[i].getSize()); 
         }
-        panelTwo.add(processCountBox);
-        processCountBox.setVisible(false);
+        panelTwo.add(processSetBox);
+        processSetBox.setVisible(false);
         processComboBoxLabel.setVisible(false);
         
         // adding the radiobuttons to a group to enable only one application chosen at a time
@@ -150,13 +150,13 @@ public class GUI {
                 averageModel.setRowCount(0);
                 overallModel.setRowCount(0);
                 //set the default process set to set one
-                processCountModel.setSelectedItem(processSets[0].getSize());
+                processSetModel.setSelectedItem(processSets[0].getSize());
                 appTable.setModel(appModel);
                 //regenerate the table model
                 averageResultsTable.setModel(averageModel);
                 overallResultsTable.setModel(overallModel);
-                //remove process count box and label
-                processCountBox.setVisible(false);
+                //remove process set box and label
+                processSetBox.setVisible(false);
                 processComboBoxLabel.setVisible(false);
                 //reset panel
                 panelTwo.revalidate();
@@ -174,14 +174,14 @@ public class GUI {
                         if (appButtons[index].isSelected()){
                             appModel.setRowCount(0);
                             processComboBoxLabel.setVisible(true);
-                            processCountBox.setVisible(true);
+                            processSetBox.setVisible(true);
                            
                             //sets the default process set size to three
                             for (int j = 0; j < processSets[0].getSize(); j++) {
                                 Object[] appData = {processSets[0].getProcesses()[j], processSets[0].getArrivalOrders()[j], applications[index].getBurstTimes()[j]};
                                 appModel.addRow(appData);
                             }
-
+                            //set the populated app model data into the application table
                             appTable.setModel(appModel);
                             panelTwo.repaint();
                             
@@ -194,17 +194,16 @@ public class GUI {
         }
 
         //action listener to when the dropdown value is selected for a specific application
-        processCountBox.addActionListener(new ActionListener() {
+        processSetBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //loops through array of application buttons to find which individual application is selected
                 for (int i = 0; i < appButtons.length; i++) {
                     if (appButtons[i].isSelected()) {
                         appModel.setRowCount(0);
+                        //index of the combo box selected is processSetBox.getSelectedIndex()
+                        int comboIndex = processSetBox.getSelectedIndex();
                         //loop through array of process sets to find which process set is selected and to set the application data
-                        processCountBox.getSelectedItem(); 
-                        //index of the combo box selected is processCountBox.getSelectedIndex()
-                        int comboIndex = processCountBox.getSelectedIndex();
                         for (int j = 0; j < processSets[comboIndex].getSize(); j++) {
                             Object[] appData = {processSets[comboIndex].getProcesses()[j], processSets[comboIndex].getArrivalOrders()[j], applications[i].getBurstTimes()[j]};
                             appModel.addRow(appData);
@@ -218,7 +217,7 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //sets the process and application data to each scheduler 
-                int comboIndex = processCountBox.getSelectedIndex();
+                int comboIndex = processSetBox.getSelectedIndex();
                 for (int i = 0; i < appButtons.length; i++) {
                     if (appButtons[i].isSelected()) {
                         fcfs.setData(processSets[0], applications[i]);
@@ -253,7 +252,6 @@ public class GUI {
 
                     //close loading dialog on complete
                     SwingUtilities.invokeLater(()->{ 
-                        // popup.setModal(true);
                         popup.dispose();
                     });
                 })).start();;
