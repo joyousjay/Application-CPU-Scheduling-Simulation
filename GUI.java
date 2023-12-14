@@ -174,8 +174,8 @@ public class GUI {
                             appModel.setRowCount(0);
                             processComboBoxLabel.setVisible(true);
                             processSetBox.setVisible(true);
-                           
-                            //sets the default process set size to three
+                            
+                            //sets the default process set size to three when an application is chosen
                             for (int j = 0; j < processSets[0].getSize(); j++) {
                                 Object[] appData = {processSets[0].getProcesses()[j], processSets[0].getArrivalOrders()[j], applications[index].getBurstTimes()[j]};
                                 appModel.addRow(appData);
