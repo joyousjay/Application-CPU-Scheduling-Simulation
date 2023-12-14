@@ -84,7 +84,6 @@ public class GUI {
             appModel.addColumn(columnNames[i]);
         }
         appTable.setPreferredScrollableViewportSize(new Dimension(350,350));
-        //appModel.addTableModelListener(this);
         panelTwo.add(new JScrollPane(appTable));
        
         //the data being added to the table for the average results of a CPU scheduler for an application
