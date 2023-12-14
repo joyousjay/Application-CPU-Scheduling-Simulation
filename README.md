@@ -12,7 +12,9 @@ To reset the simulation, click on the **reset button** to clear the application 
 
 ## Trials
 To test a new trial: press the reset button to start a new trial. 
-For example: (assuming the user starts with trial one) once you finish that trial (completed simulating all applications for the following process count), please press the **reset button** to start a trial two, and then press the **reset button** to start trial three.
+For example: (assuming the user starts with trial one) once you finish that trial (completed simulating all applications for the following process count), please press the **reset button** to start a trial two, and then press the **reset button** to start trial three. 
+
+Please note that the simulation is defaulted to start with trial one for every application, which process set size of three.
 
 ### Trial One 
 Process Set Size: 3
